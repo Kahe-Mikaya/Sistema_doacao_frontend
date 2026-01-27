@@ -1,9 +1,10 @@
 import { View, Text, TextInput, Pressable,Image, StyleSheet } from 'react-native';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { styles } from './login.styles';
 import { router } from 'expo-router';
 import { Forms } from '@/components/forms';
 import { saveToken } from '@/service/authStorage';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -13,6 +14,7 @@ export default function Login() {
   const [message,setMessage] = useState('')
   const [isError,setError] = useState(false)
   const API_URL = process.env.EXPO_PUBLIC_URL_API
+  const {loadToken} = useAuth()
 
   async function handleLogin() {
    try {
@@ -48,13 +50,15 @@ export default function Login() {
     }
     setError(false)
     setMessage("Login realizado com sucesso!")
-    await saveToken(dataApi)
+    await saveToken(dataApi,tipo,tipo == "PF"? email : cnpj)
+    await loadToken()
     router.push('/(tabs)');
 
     console.log("Login OK:", dataApi);
   } catch (error) {
     setError(true)
     setMessage("Erro de rede")
+  
     console.log("Erro de rede:", error);
   }
 }

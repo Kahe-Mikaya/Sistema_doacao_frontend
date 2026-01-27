@@ -6,21 +6,30 @@ type AuthContextType = {
   token: string | null;
   isAuthenticated: boolean;
   logout: () => Promise<void>;
+  userType: string | null;
+  login: string | null
+  loadToken: ()=>void
 };
 
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [userType,setUserType] = useState<string | null>(null)
+  const [login,setLogin] = useState<string | null>(null)
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadToken() {
+  async function loadToken() {
       const storedToken = await getToken();
-      setToken(storedToken);
+
+      setToken(storedToken.token)
+      setUserType(storedToken.userType);
+      setLogin(storedToken.login)
       setLoading(false);
     }
+    
+
+  useEffect(() => {
     loadToken();
   }, []);
 
@@ -34,6 +43,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         token,
         isAuthenticated: !!token,
         logout,
+        userType,
+        login,
+        loadToken
       }}
     >
       {!loading && children}
