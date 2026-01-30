@@ -82,8 +82,6 @@ export default function Register() {
         type: 'image/jpeg',
       } as any);
     }
-    console.log("print do form data",formData )
-    console.log("register ",API_URL+endpoint);
     try{
       const response = await fetch(API_URL+endpoint, {
         method: 'POST',

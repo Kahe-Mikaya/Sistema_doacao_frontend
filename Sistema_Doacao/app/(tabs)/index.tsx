@@ -1,27 +1,33 @@
 import { Pressable, Text, View } from 'react-native';
 import { Redirect } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { CustomTopTabs } from '@/components/customTab/customTopTab';
 
 export default function App() {
 
   const { isAuthenticated, userType, token,login ,logout} = useAuth();
   const urlApi = process.env.EXPO_PUBLIC_URL_API
+  const [UserData,setUserData] = useState()
+  const [urlProfile,setUrlProfile] = useState("../../assets/image/UserAnonimo.png")
 
   async function getUserData(){
      if(isAuthenticated && userType){
       const endpoint = userType == "PF"? "/usuario/"+login : "/ongs/"+login
       try{
-      const response = await fetch(urlApi + endpoint, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer "+token
-          
-        },     
-        })
-      const Userdata = await response.json()
-      console.log("dados do usuario: ", Userdata)
+        const response = await fetch(urlApi + endpoint, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer "+token
+            
+          },     
+          })
+        const apiData = await response.json()
+        setUserData(apiData)
+        if(apiData.foto){
+          setUrlProfile(urlApi+'/uploads/ong/'+apiData.foto)
+        }
       }catch(error){
         console.log("erro")
       }
@@ -39,11 +45,12 @@ export default function App() {
   }
   
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{color: "white"}}>Olá, React Native 🚀</Text>
-      <Pressable onPress={logout}>
-        <Text style={{color: "red"}}>deslogue aqui</Text>
-      </Pressable>
-    </View>
+    <>
+        <View style={{flex: 1 , backgroundColor: "white" }}>
+        <CustomTopTabs userData={UserData} logout={logout} profileIconUrl={UserData && UserData.foto? {uri: urlProfile}: require("../../assets/images/UserAnonimo.png")} homeIconUrl={require("../../assets/images/home.png")} >            
+        </CustomTopTabs>
+        </View>
+  
+    </>
   );
 }

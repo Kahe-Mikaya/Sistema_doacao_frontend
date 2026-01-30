@@ -89,7 +89,7 @@ export default function Login() {
             {type : "text", value: cnpj, setFunction: setCnpj, label: "CNPJ" }
             : 
             {type : "text", value: email, setFunction: setEmail, label: "Email" },
-          {type : "text", value: senha, setFunction: setSenha, label: "Senha" },]}>
+          {type : "password", value: senha, setFunction: setSenha, label: "Senha" },]}>
 
         </Forms>
       </View>
