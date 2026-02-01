@@ -8,10 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRegister } from '@/contexts/RegisterContext';
 import MapView, { Marker } from 'react-native-maps';
 
-// Função simples para gerar ID único (TEMPORÁRIO - remover quando backend for corrigido)
-const generateId = () => {
-    return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-};
+// O backend agora gera o ID automaticamente e aceita latitude/longitude separadas.
 
 const INITIAL_LOCATION = {
     latitude: -6.891931027755727,
@@ -99,21 +96,15 @@ export default function RegisterCampanha() {
         }
 
         formData.append('descricao', data.descricao);
-        formData.append('id', generateId()); // ← TEMPORÁRIO: Gera ID único (remover quando backend for corrigido)
+        // O ID agora é gerado automaticamente pelo backend ✅
 
         if (login) {
-            formData.append('cnpjOng', login); // CNPJ da ONG logada (ajustado para o nome do banco)
+            formData.append('cnpjOng', login); // CNPJ da ONG logada
         }
 
         if (data.location) {
-            const geolocalizacao = {
-                type: 'Point',
-                coordinates: [
-                    data.location.longitude,
-                    data.location.latitude,
-                ],
-            };
-            formData.append('geolocalizacao', JSON.stringify(geolocalizacao));
+            formData.append('latitude', data.location.latitude.toString());
+            formData.append('longitude', data.location.longitude.toString());
         }
 
         if (data.foto) {
@@ -127,9 +118,9 @@ export default function RegisterCampanha() {
         // Debug: Ver o que está sendo enviado
         console.log("=== Dados enviados para o backend ===");
         console.log("Descrição:", data.descricao);
-        console.log("ONG ID:", login);
-        console.log("Foto:", data.foto ? "Sim" : "Não");
-        console.log("Localização:", data.location ? "Sim" : "Não");
+        console.log("CNPJ ONG:", login);
+        console.log("Latitude:", data.location?.latitude);
+        console.log("Longitude:", data.location?.longitude);
         console.log("=====================================");
 
         try {
