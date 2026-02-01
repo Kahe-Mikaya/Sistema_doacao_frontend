@@ -3,66 +3,101 @@ import { useAuth } from '@/contexts/AuthContext';
 import { HorizontalCardList } from '../horizontalCardList';
 import { useEffect, useState } from 'react';
 import { VerticalCardList } from '../verticalCardList';
-type OngApi = {
-  cnpj: string;
-  nome: string;
-  descricao: string;
-  telefone: string;
+import { router } from 'expo-router';
 
-  latitude: number;
-  longitude: number;
-  foto: ImageSourcePropType;
-  avaliacoes: [];
-  campanhas: [];
-  doacoes: [];
+type OngApi = {
+    cnpj: string;
+    nome: string;
+    descricao: string;
+    telefone: string;
+
+    latitude: number;
+    longitude: number;
+    foto: ImageSourcePropType;
+    avaliacoes: [];
+    campanhas: [];
+    doacoes: [];
 };
 
-export function HomeContent(){
-    const [ongsData, setOngsData]= useState([])
-    const { token } = useAuth();
+export function HomeContent() {
+    const [ongsData, setOngsData] = useState([])
+    const [campanhasData, setCampanhasData] = useState([])
+    const { token, userType } = useAuth();
     const urlApi = process.env.EXPO_PUBLIC_URL_API
-    async function getOngs(){
-    
-      try{
-        const response = await fetch(urlApi + "/ongs/", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer "+token
-            
-          },     
-          })
-        const apiData = await response.json()
-        if(apiData){
-            const newDate = []
-            apiData.forEach((element: OngApi) => {
-                newDate.push({
-                    avaliacoes : element.avaliacoes,
-                    campanhas : element.campanhas,
+
+    async function getOngs() {
+        try {
+            const response = await fetch(urlApi + "/ongs/", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+            })
+            const apiData = await response.json()
+            console.log("API ONGs - Dados brutos:", apiData);
+            if (apiData) {
+                const newDate = apiData.map((element: OngApi) => ({
+                    avaliacoes: element.avaliacoes,
+                    campanhas: element.campanhas,
                     id: element.cnpj,
                     descricao: element.descricao,
-                    latitude : element.latitude,
-                    longitude : element.longitude,
+                    latitude: element.latitude,
+                    longitude: element.longitude,
                     name: element.nome,
                     telefone: element.telefone,
                     doacoes: element.doacoes,
-                    image: {uri: urlApi+"/uploads/ong/"+element.foto}
-
-                })
-            });
-            setOngsData(newDate)
+                    image: { uri: urlApi + "/uploads/ong/" + element.foto }
+                }));
+                setOngsData(newDate)
+            }
+        } catch (error) {
+            console.log("erro ongs")
         }
+    }
 
+    async function getCampanhas() {
+        try {
+            const response = await fetch(urlApi + "/campanha", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+            })
 
-        
-      }catch(error){
-        console.log("erro")
-      }
-    
-  }
-    useEffect(()=>{
+            const apiData = await response.json()
+            console.log("--- DEBUG CAMPANHAS ---");
+            console.log("Status:", response.status);
+            console.log("Dados:", apiData);
+
+            let rawList = [];
+            if (apiData && apiData.body && Array.isArray(apiData.body)) {
+                rawList = apiData.body;
+            } else if (Array.isArray(apiData)) {
+                rawList = apiData;
+            }
+
+            if (rawList.length > 0) {
+                const formattedData = rawList.map((item: any) => ({
+                    id: item.id || String(Math.random()),
+                    name: "Campanha",
+                    descricao: item.descricao || "Sem descrição",
+                    image: item.foto ? { uri: urlApi + "/uploads/ong/" + item.foto } : require("../../assets/images/ong.png")
+                }))
+                setCampanhasData(formattedData as any)
+            } else {
+                setCampanhasData([])
+            }
+        } catch (error) {
+            console.log("erro campanhas:", error)
+        }
+    }
+
+    useEffect(() => {
         getOngs()
-    },[])
+        getCampanhas()
+    }, [])
     const data = [
         {
             id: '1',
@@ -76,7 +111,7 @@ export function HomeContent(){
             image: require("../../assets/images/ong.png"),
             descricao: "Criança Esperança é uma campanha nacional de mobilização social que busca a conscientização em prol dos direitos da criança e do adolescente, promovida pela TV Globo, em parceria com a UNICEF entre 1986 e 2003, e desde 2004 com a UNESCO. O projeto é uma das mais bem-sucedidas marcas relacionadas a programas sociais dirigidos às crianças carentes em todo o mundo. Anualmente, são realizados os shows que incentivam as doações feitas pelos telespectadores e por várias instituições."
         },
-    {
+        {
             id: '3',
             name: 'ONG Mais Saber',
             image: require("../../assets/images/ong.png"),
@@ -95,23 +130,46 @@ export function HomeContent(){
             descricao: "Criança Esperança é uma campanha nacional de mobilização social que busca a conscientização em prol dos direitos da criança e do adolescente, promovida pela TV Globo, em parceria com a UNICEF entre 1986 e 2003, e desde 2004 com a UNESCO. O projeto é uma das mais bem-sucedidas marcas relacionadas a programas sociais dirigidos às crianças carentes em todo o mundo. Anualmente, são realizados os shows que incentivam as doações feitas pelos telespectadores e por várias instituições."
         },
     ]
-    
-    return(
-        <View style={{ flex: 1,padding: 20, paddingTop: 30,}}>
-            <Text style={{fontSize: 20, fontWeight: 700, color: "#125f0c"}}>
-                Seja bem vindo !
-            </Text>
+
+    return (
+        <View style={{ flex: 1, padding: 20, paddingTop: 30, }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 }}>
+                <Text style={{ fontSize: 20, fontWeight: '700', color: "#125f0c" }}>
+                    Seja bem vindo !
+                </Text>
+
+                {userType === 'PJ' && (
+                    <Pressable
+                        onPress={() => router.push('/auth/registerCampanha')}
+                        style={{
+                            backgroundColor: "#125f0c",
+                            paddingVertical: 8,
+                            paddingHorizontal: 15,
+                            borderRadius: 20,
+                            elevation: 3,
+                            shadowColor: '#000',
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.2,
+                            shadowRadius: 2,
+                        }}
+                    >
+                        <Text style={{ color: "white", fontWeight: "600", fontSize: 13 }}>
+                            + Campanha
+                        </Text>
+                    </Pressable>
+                )}
+            </View>
+
             <HorizontalCardList
-             title="ONGs Próximas a você"
-             data={ongsData}
-             >
-                
-            </HorizontalCardList>
-            <VerticalCardList title="Campanhas em andamento"
-                data={data}
+                title="ONGs Próximas a você"
+                data={ongsData}
             >
 
-            </VerticalCardList>
+            </HorizontalCardList>
+            <VerticalCardList
+                title="Campanhas em andamento"
+                data={[...data, ...campanhasData]}
+            />
         </View>
     )
 }
