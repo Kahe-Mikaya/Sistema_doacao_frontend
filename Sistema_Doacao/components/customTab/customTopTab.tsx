@@ -3,7 +3,7 @@ import { View, Pressable, Text, Image, ImageSourcePropType } from 'react-native'
 import { HomeContent } from '../content/home';
 import { ProfileContent } from '../content/profile';
 
-export function CustomTopTabs({homeIconUrl, profileIconUrl, logout, userData}:{homeIconUrl: ImageSourcePropType, profileIconUrl: ImageSourcePropType, logout: ()=> void,userData: any}) {
+export function CustomTopTabs({homeIconUrl, profileIconUrl, logout, userData, getUserData}:{homeIconUrl: ImageSourcePropType, profileIconUrl: ImageSourcePropType, logout: ()=> void,userData: any, getUserData: ()=> void }) {
   const [activeTab, setActiveTab] = useState<'home' | 'explore'>('home');
   return (
     <>
@@ -29,7 +29,7 @@ export function CustomTopTabs({homeIconUrl, profileIconUrl, logout, userData}:{h
       </View>
 
       {activeTab === 'home' && <HomeContent />}
-      {activeTab === 'explore' && <ProfileContent UserData={userData} userProfile={profileIconUrl}/>}
+      {activeTab === 'explore' && <ProfileContent getUserdate={getUserData} UserData={userData} userProfile={profileIconUrl}/>}
     </>
   );
 }

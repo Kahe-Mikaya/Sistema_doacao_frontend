@@ -195,23 +195,26 @@ export default function RegisterCampanha() {
     }
 
     return (
-        <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
+
+           
+
             <View style={styles.containerRegister}>
-                <Image
+                 <Image
                     source={require('../../assets/images/partial_bottomCircle.png')}
                     style={styles.partialBottomCircle}
                     resizeMode="contain"
                 />
-                <Image
+                  <Image
                     source={require('../../assets/images/partial_TopCircle.png')}
                     style={styles.partialTopCircle}
                     resizeMode="contain"
                 />
-
+                
+              
                 <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#125f0c', marginBottom: 20, textAlign: 'center' }}>
                     Cadastrar Nova Campanha
                 </Text>
-
+                <View style={{marginTop: 30,display: "flex", gap: 10, width: "100%", alignItems: "center"}}>
                 <Forms
                     list={[
                         {
@@ -221,6 +224,12 @@ export default function RegisterCampanha() {
                         },
                         {
                             type: 'text',
+                            value: data.nome,
+                            setFunction: (v) => setData({ nome: v }),
+                            label: 'Nome',
+                        },
+                        {
+                            type: 'desc',
                             value: data.descricao,
                             setFunction: (v) => setData({ descricao: v }),
                             label: 'Descrição da Campanha',
@@ -231,6 +240,7 @@ export default function RegisterCampanha() {
                         },
                     ]}
                 />
+                </View>
 
                 {data.location && (
                     <Text style={{ textAlign: 'center', color: '#1e90ff', marginBottom: 10 }}>
@@ -257,7 +267,7 @@ export default function RegisterCampanha() {
                     </Text>
                 )}
             </View>
-        </ScrollView>
+
     );
 }
 

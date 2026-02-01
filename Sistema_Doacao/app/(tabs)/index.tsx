@@ -47,7 +47,7 @@ export default function App() {
   return (
     <>
         <View style={{flex: 1 , backgroundColor: "white" }}>
-        <CustomTopTabs userData={UserData} logout={logout} profileIconUrl={UserData && UserData.foto? {uri: urlProfile}: require("../../assets/images/UserAnonimo.png")} homeIconUrl={require("../../assets/images/home.png")} >            
+        <CustomTopTabs getUserData={getUserData} userData={UserData} logout={logout} profileIconUrl={UserData && UserData.foto? {uri: urlProfile}: require("../../assets/images/UserAnonimo.png")} homeIconUrl={require("../../assets/images/home.png")} >            
         </CustomTopTabs>
         </View>
   

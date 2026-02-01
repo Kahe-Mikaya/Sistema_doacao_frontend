@@ -41,6 +41,7 @@ export function HomeContent() {
                     avaliacoes: element.avaliacoes,
                     campanhas: element.campanhas,
                     id: element.cnpj,
+                    cnpj: element.cnpj, // CNPJ para doação
                     descricao: element.descricao,
                     latitude: element.latitude,
                     longitude: element.longitude,
@@ -81,8 +82,10 @@ export function HomeContent() {
             if (rawList.length > 0) {
                 const formattedData = rawList.map((item: any) => ({
                     id: item.id || String(Math.random()),
-                    name: "Campanha",
-                    descricao: item.descricao || "Sem descrição",
+                    idCampanha: item.id,
+                    cnpj: item.cnpjOng,
+                    name: item.nome || "Nova Campanha", // Pega o nome real se existir
+                    descricao: item.descricao  || "Sem descrição disponível",
                     image: item.foto ? { uri: urlApi + "/uploads/ong/" + item.foto } : require("../../assets/images/ong.png")
                 }))
                 setCampanhasData(formattedData as any)

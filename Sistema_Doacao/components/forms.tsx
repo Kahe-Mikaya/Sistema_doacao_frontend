@@ -9,6 +9,12 @@ type FormItem =
     setFunction: (value: string) => void;
   }
   | {
+      type: 'desc';
+      label?: string;
+      value?: string;
+      setFunction: (value: string) => void;
+    }
+  | {
     type: 'tipo';
     value: 'PF' | 'PJ';
     setFunction: (value: 'PF' | 'PJ') => void;
@@ -103,7 +109,26 @@ export function Forms({ list }: FormProps) {
               </Pressable>
 
             );
-
+            case 'desc':
+              return (
+                <TextInput
+                  key={index}
+                  style={[
+                    styles.input,
+                    {
+                      height: 200,
+                      width: "80%",           
+                      textAlignVertical: 'top',
+                      paddingTop: 12,
+                    },
+                  ]}
+                  multiline
+                  numberOfLines={4}
+                  placeholder={item.label}
+                  value={item.value}
+                  onChangeText={item.setFunction}
+                />
+              );
           default:
             return null;
         }
