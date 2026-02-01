@@ -84,8 +84,8 @@ export function HomeContent() {
                     id: item.id || String(Math.random()),
                     idCampanha: item.id,
                     cnpj: item.cnpjOng,
-                    name: item.descricao || "Nova Campanha", // Pega o nome real se existir
-                    descricao: item.nome || "Sem descrição disponível",
+                    name: item.nome || "Nova Campanha", // Pega o nome real se existir
+                    descricao: item.descricao  || "Sem descrição disponível",
                     image: item.foto ? { uri: urlApi + "/uploads/ong/" + item.foto } : require("../../assets/images/ong.png")
                 }))
                 setCampanhasData(formattedData as any)
