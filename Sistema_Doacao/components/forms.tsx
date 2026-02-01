@@ -3,25 +3,25 @@ import { styles } from '@/app/auth/login.styles';
 
 type FormItem =
   | {
-      type: 'text' | 'password';
-      label?: string;
-      value?: string;
-      setFunction: (value: string) => void;
-    }
+    type: 'text' | 'password';
+    label?: string;
+    value?: string;
+    setFunction: (value: string) => void;
+  }
   | {
-      type: 'tipo';
-      value: 'PF' | 'PJ';
-      setFunction: (value: 'PF' | 'PJ') => void;
-    }
+    type: 'tipo';
+    value: 'PF' | 'PJ';
+    setFunction: (value: 'PF' | 'PJ') => void;
+  }
   | {
-      type: 'image';
-      value?: string;
-      setFunction: () => void;
-    }
+    type: 'image';
+    value?: string;
+    setFunction: () => void;
+  }
   | {
-      type: 'geoLocalization';
-      setFunction: () => void;
-    };
+    type: 'geoLocalization';
+    setFunction: () => void;
+  };
 
 type FormProps = {
   list: FormItem[];
@@ -33,7 +33,8 @@ export function Forms({ list }: FormProps) {
       {list.map((item, index) => {
         switch (item.type) {
           case "password":
-            <TextInput
+            return (
+              <TextInput
                 key={index}
                 style={styles.input}
                 secureTextEntry
@@ -41,6 +42,7 @@ export function Forms({ list }: FormProps) {
                 value={item.value}
                 onChangeText={item.setFunction}
               />
+            );
 
           case 'text':
             return (
@@ -85,20 +87,20 @@ export function Forms({ list }: FormProps) {
                   style={styles.photo}
                 />
                 <Pressable style={styles.photoButton} onPress={item.setFunction}>
-                  <Text style={{color: "#1e90ff", fontWeight: "bold"}}>Selecionar foto</Text>
+                  <Text style={{ color: "#1e90ff", fontWeight: "bold" }}>Selecionar foto</Text>
                 </Pressable>
               </View>
             );
 
           case 'geoLocalization':
             return (
-             
-                
-                <Pressable key={index} onPress={item.setFunction} style={styles.buttonLocation}>
-                    <Image style={{height: 24, width: 24}} source={require('../assets/images/location.png')}></Image>
-                    
-                    <Text style={{color: "#1e90ff", fontWeight: "bold"}} >Selecionar localização</Text>
-                </Pressable>
+
+
+              <Pressable key={index} onPress={item.setFunction} style={styles.buttonLocation}>
+                <Image style={{ height: 24, width: 24 }} source={require('../assets/images/location.png')}></Image>
+
+                <Text style={{ color: "#1e90ff", fontWeight: "bold" }} >Selecionar localização</Text>
+              </Pressable>
 
             );
 

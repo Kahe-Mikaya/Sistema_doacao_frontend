@@ -1,7 +1,7 @@
 import { View, Pressable, Text, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { useState } from 'react';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 
 const INITIAL_LOCATION = {
   latitude: -6.891931027755727,
@@ -16,11 +16,14 @@ export default function MapPicker() {
     longitude: number;
   } | null>(null);
 
+  const params = useLocalSearchParams();
+  const returnPath = (params.returnPath as string) || '/auth/register';
+
   function confirmLocation() {
     if (!marker) return;
 
     router.replace({
-      pathname: '/auth/register',
+      pathname: returnPath as any, // "as any" para evitar erro de ts com rotas dinâmicas
       params: {
         latitude: marker.latitude.toString(),
         longitude: marker.longitude.toString(),

@@ -15,6 +15,7 @@ type RegisterData = {
   cnpj: string;
   foto: string | null;
   location: Location | null;
+  descricao: string;
 };
 
 type RegisterContextType = {
@@ -35,6 +36,7 @@ export function RegisterProvider({ children }: { children: ReactNode }) {
     cnpj: '',
     foto: null,
     location: null,
+    descricao: '',
   });
 
   function setData(newData: Partial<RegisterData>) {
