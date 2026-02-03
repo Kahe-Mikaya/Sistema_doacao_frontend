@@ -32,8 +32,8 @@ const DEMO: Record<string, { campanha: Campanha; ong: ONG }> = {
       id: 'demo-crianca-esperanca',
       nome: 'Criança Esperança',
       descricao:
-        'Campanha nacional de mobilização social para apoiar projetos que protegem direitos de crianças e adolescentes. Este é um exemplo demonstrativo — ao cadastrar campanhas pelo backend, os dados reais aparecem aqui.',
-      foto: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=1200&q=60',
+        'Mobilização para apoiar projetos sociais que fortalecem direitos de crianças e adolescentes. A doação ajuda a financiar iniciativas em educação, proteção e desenvolvimento. Este é um exemplo demonstrativo — ao cadastrar campanhas pelo backend, os dados reais aparecem aqui.',
+      foto: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&w=1200&q=60',
       latitude: -22.9068,
       longitude: -43.1729,
       cnpjOng: 'demo-ong',
@@ -41,11 +41,11 @@ const DEMO: Record<string, { campanha: Campanha; ong: ONG }> = {
     ong: {
       cnpj: 'demo-ong',
       nome: 'ONG Parceira (Exemplo)',
-      descricao: 'Exemplo de ONG parceira para demonstrar o fluxo.',
+      descricao: 'Organização parceira (exemplo) focada em apoiar projetos sociais, com acolhimento, triagem de doações e encaminhamento para famílias e instituições cadastradas. Use o botão de Localização para ver o ponto de apoio no mapa.',
       telefone: '(00) 00000-0000',
       latitude: -22.9068,
       longitude: -43.1729,
-      foto: 'https://images.unsplash.com/photo-1520975958225-1a087a1b4b33?auto=format&fit=crop&w=1200&q=60',
+      foto: 'https://images.unsplash.com/photo-1516900557549-41557b2fbb19?auto=format&fit=crop&w=1200&q=60',
     },
   },
   'demo-agasalho': {
@@ -53,8 +53,8 @@ const DEMO: Record<string, { campanha: Campanha; ong: ONG }> = {
       id: 'demo-agasalho',
       nome: 'Campanha do Agasalho',
       descricao:
-        'Arrecadação de roupas e cobertores para pessoas em situação de vulnerabilidade durante períodos mais frios. Este é um exemplo demonstrativo.',
-      foto: 'https://images.unsplash.com/photo-1520975958225-1a087a1b4b33?auto=format&fit=crop&w=1200&q=60',
+        'Arrecadação de roupas, cobertores e calçados para pessoas em situação de vulnerabilidade, especialmente em períodos frios. Doe itens em bom estado e ajude a aquecer quem precisa. (Exemplo demonstrativo).',
+      foto: 'https://images.unsplash.com/photo-1516900557549-41557b2fbb19?auto=format&fit=crop&w=1200&q=60',
       latitude: -23.5505,
       longitude: -46.6333,
       cnpjOng: 'demo-ong-2',
@@ -62,11 +62,11 @@ const DEMO: Record<string, { campanha: Campanha; ong: ONG }> = {
     ong: {
       cnpj: 'demo-ong-2',
       nome: 'ONG Solidária (Exemplo)',
-      descricao: 'Exemplo de ONG parceira para demonstrar o mapa.',
+      descricao: 'Ponto de apoio (exemplo) para recebimento e triagem de roupas, cobertores e itens de inverno. As doações são organizadas por tamanho e condição, e distribuídas conforme prioridade de necessidade.',
       telefone: '(00) 00000-0000',
       latitude: -23.5505,
       longitude: -46.6333,
-      foto: 'https://images.unsplash.com/photo-1518398046578-8cca57782e17?auto=format&fit=crop&w=1200&q=60',
+      foto: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1200&q=60',
     },
   },
   'demo-alimentos': {
@@ -74,7 +74,7 @@ const DEMO: Record<string, { campanha: Campanha; ong: ONG }> = {
       id: 'demo-alimentos',
       nome: 'Arrecadação de Alimentos',
       descricao:
-        'Coleta de cestas básicas e itens essenciais para famílias em insegurança alimentar. Este é um exemplo demonstrativo.',
+        'Coleta de cestas básicas e itens essenciais para famílias em insegurança alimentar. Prioriza arroz, feijão, macarrão, óleo, leite, café e itens de higiene. As doações são triadas e distribuídas por demanda. (Exemplo demonstrativo).',
       foto: 'https://images.unsplash.com/photo-1606787366850-de6330128bfc?auto=format&fit=crop&w=1200&q=60',
       latitude: -7.1195,
       longitude: -34.8450,
@@ -83,7 +83,7 @@ const DEMO: Record<string, { campanha: Campanha; ong: ONG }> = {
     ong: {
       cnpj: 'demo-ong-3',
       nome: 'ONG de Apoio (Exemplo)',
-      descricao: 'Exemplo de ONG para demonstrar o fluxo completo.',
+      descricao: 'Organização comunitária (exemplo) que atua na segurança alimentar, reunindo voluntários para montar cestas, organizar filas de entrega e acompanhar famílias em vulnerabilidade.',
       telefone: '(00) 00000-0000',
       latitude: -7.1195,
       longitude: -34.8450,
@@ -205,12 +205,21 @@ export default function CampanhaDetalhes() {
             )}
 
             <Text style={{ color: '#0d0d0d', lineHeight: 20 }}>
-              {campanha?.descricao ?? 'Sem descrição.'}
+              {campanha?.descricao ?? 'Esta campanha ainda não possui descrição cadastrada. Mesmo assim, você pode doar: informe o tipo, quantidade e uma breve descrição dos itens. Se preferir, use o botão Localização para falar com a ONG responsável.'}
             </Text>
 
             <View style={{ flexDirection: 'row', gap: 10, marginTop: 14 }}>
               <Pressable
-                onPress={() => router.push({ pathname: '/campanha/[id]/doar', params: { id: String(id) } })}
+                onPress={() =>
+                  router.push({
+                    pathname: '/auth/donation',
+                    params: {
+                      cnpj: ong?.cnpj ?? campanha?.cnpjOng ?? '',
+                      campaignId: String(campanha?.id ?? id),
+                      targetName: String(campanha?.nome ?? 'Campanha'),
+                    },
+                  })
+                }
                 style={{
                   flex: 1,
                   backgroundColor: '#125f0c',

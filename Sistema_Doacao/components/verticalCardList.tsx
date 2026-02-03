@@ -1,4 +1,5 @@
-import { View, Text, Image, FlatList, Pressable, Dimensions, ImageSourcePropType } from 'react-native';
+import { View, Text, FlatList, Pressable, Dimensions, ImageSourcePropType } from 'react-native';
+import { SafeImage } from './SafeImage';
 import { styles } from './HorizontalCardList.styles';
 import { useRef } from 'react';
 
@@ -55,7 +56,7 @@ export function VerticalCardList({ title, data, onPressItem }: Props) {
                 borderRadius: 20,
               }}
             >
-              <Image source={item.image} style={{ width: 300, height: 200, borderRadius: 20 }} />
+              <SafeImage source={item.image} fallback={require('../assets/images/ong.png')} style={{ width: 300, height: 200, borderRadius: 20 }} />
               <Text style={{ width: 250, fontSize: 18, fontWeight: '800', textAlign: 'center', color: '#036134' }}>
                 {item.name}
               </Text>
