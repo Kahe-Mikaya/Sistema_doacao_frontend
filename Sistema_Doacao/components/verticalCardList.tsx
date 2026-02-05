@@ -1,4 +1,5 @@
-import { View, Text, Image, FlatList, Pressable, StyleSheet, Dimensions, ImageSourcePropType } from 'react-native';
+import { View, Text, FlatList, Pressable, Dimensions, ImageSourcePropType } from 'react-native';
+import { SafeImage } from './SafeImage';
 import { styles } from './HorizontalCardList.styles';
 import { useRef } from 'react';
 import { router } from 'expo-router';
@@ -16,6 +17,7 @@ type Item = {
 type Props = {
   title: string;
   data: Item[];
+  onPressItem?: (item: Item) => void;
 };
 
 const ITEM_WIDTH = 120;

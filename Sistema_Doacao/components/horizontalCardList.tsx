@@ -1,4 +1,5 @@
-import { View, Text, Image, FlatList, Pressable, StyleSheet, Dimensions, ImageSourcePropType } from 'react-native';
+import { View, Text, FlatList, Pressable, Dimensions, Image, ImageSourcePropType } from 'react-native';
+import { SafeImage } from './SafeImage';
 import { styles } from './HorizontalCardList.styles';
 import { useRef } from 'react';
 import { router } from 'expo-router';
@@ -8,19 +9,22 @@ type Item = {
   id: string;
   name: string;
   image: ImageSourcePropType;
+  descricao?: string;
+  latitude?: number;
+  longitude?: number;
   cnpj?: string;
 };
 
 type Props = {
   title: string;
   data: Item[];
+  onPressItem?: (item: Item) => void;
 };
 
 const ITEM_WIDTH = 120;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-export function HorizontalCardList({ title, data }: Props) {
-  const { userType } = useAuth();
+export function HorizontalCardList({ title, data, onPressItem }: Props) {
   const listRef = useRef<FlatList>(null);
 
   function scrollRight() {
@@ -42,11 +46,9 @@ export function HorizontalCardList({ title, data }: Props) {
 
   return (
     <View style={styles.container}>
-      {/* Título */}
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
 
-        {/* Seta */}
         <Pressable onPress={scrollRight}>
           <Image style={{ height: 20, width: 20 }} source={require("../assets/images/arrowRight.png")}></Image>
         </Pressable>
