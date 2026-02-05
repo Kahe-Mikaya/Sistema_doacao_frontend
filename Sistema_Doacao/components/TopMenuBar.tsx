@@ -23,7 +23,7 @@ export function TopMenuBar({ homeIconUrl, profileIconUrl, onLogout, onPressProfi
       }}
     >
       <Pressable onPress={() => router.push('/(tabs)')}>
-        <Image style={{ height: 40, width: 40 }} source={homeIconUrl} />
+        <Image style={{ height: 40, width: 40 }} source={require('../assets/images/home.png')} />
       </Pressable>
 
       <Image
@@ -33,12 +33,7 @@ export function TopMenuBar({ homeIconUrl, profileIconUrl, onLogout, onPressProfi
       />
 
       <View style={{ display: 'flex', flexDirection: 'row' }}>
-        <Pressable onPress={onPressProfile ?? (() => router.push('/(tabs)'))}>
-          <Image
-            style={{ height: 40, width: 40, borderRadius: 100, borderWidth: 2, borderColor: '#036134' }}
-            source={profileIconUrl}
-          />
-        </Pressable>
+
 
         <Pressable onPress={onLogout}>
           <Image style={{ height: 40, width: 40, borderRadius: 100 }} source={require('../assets/images/logout.png')} />

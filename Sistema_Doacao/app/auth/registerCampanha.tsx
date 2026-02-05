@@ -114,7 +114,9 @@ export default function RegisterCampanha() {
                 type: 'image/jpeg',
             } as any);
         }
-
+        if(data.nome){
+            formData.append('nome', data.nome)
+        }
         // Debug: Ver o que está sendo enviado
         console.log("=== Dados enviados para o backend ===");
         console.log("Descrição:", data.descricao);
