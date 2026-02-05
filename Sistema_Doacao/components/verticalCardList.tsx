@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Pressable, Dimensions, ImageSourcePropType } from 'react-native';
+import { View, Text, FlatList, Pressable, Dimensions, ImageSourcePropType, Image } from 'react-native';
 import { SafeImage } from './SafeImage';
 import { styles } from './HorizontalCardList.styles';
 import { useRef } from 'react';

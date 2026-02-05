@@ -26,6 +26,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export function HorizontalCardList({ title, data, onPressItem }: Props) {
   const listRef = useRef<FlatList>(null);
+  const {userType} = useAuth() 
 
   function scrollRight() {
     listRef.current?.scrollToOffset({

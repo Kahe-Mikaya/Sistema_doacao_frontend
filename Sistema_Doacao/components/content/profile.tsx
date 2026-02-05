@@ -127,7 +127,7 @@ export function ProfileContent({ UserData, userProfile, getUserdate }: ProfileCo
         }
 
         Alert.alert('Sucesso', 'Perfil atualizado com sucesso!');
-        getUserdate()
+        getUserdate();
         } catch (error) {
             console.error(error);
         Alert.alert('Erro', 'Não foi possível atualizar o perfil');

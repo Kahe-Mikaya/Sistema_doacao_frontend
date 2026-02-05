@@ -95,7 +95,7 @@ export function HomeContent() {
             console.log("erro campanhas:", error)
         }
     }
-  }
+  
 
   async function getCampanhas() {
     try {
