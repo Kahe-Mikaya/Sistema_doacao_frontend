@@ -19,42 +19,81 @@ type OngApi = {
 };
 
 export function HomeContent() {
-  const [ongsData, setOngsData] = useState<any[]>([]);
-  const [campanhasData, setCampanhasData] = useState<any[]>([]);
-  const { token, userType } = useAuth();
-  const urlApi = process.env.EXPO_PUBLIC_URL_API;
+    const [ongsData, setOngsData] = useState([])
+    const [campanhasData, setCampanhasData] = useState([])
+    const { token, userType } = useAuth();
+    const urlApi = process.env.EXPO_PUBLIC_URL_API
 
-  async function getOngs() {
-    try {
-      const response = await fetch(urlApi + '/ongs', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + token,
-        },
-      });
-      const apiData = await response.json();
+    async function getOngs() {
+        try {
+            const response = await fetch(urlApi + "/ongs/", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+            })
+            const apiData = await response.json()
+            console.log("API ONGs - Dados brutos:", apiData);
+            if (apiData) {
+                const newDate = apiData.map((element: OngApi) => ({
+                    avaliacoes: element.avaliacoes,
+                    campanhas: element.campanhas,
+                    id: element.cnpj,
+                    cnpj: element.cnpj, // CNPJ para doação
+                    descricao: element.descricao,
+                    latitude: element.latitude,
+                    longitude: element.longitude,
+                    name: element.nome,
+                    telefone: element.telefone,
+                    doacoes: element.doacoes,
+                    image: { uri: urlApi + "/uploads/ong/" + element.foto }
+                }));
+                setOngsData(newDate)
+            }
+        } catch (error) {
+            console.log("erro ongs")
+        }
+    }
 
-      if (Array.isArray(apiData)) {
-        const newData = apiData.map((element: OngApi) => ({
-          avaliacoes: element.avaliacoes,
-          campanhas: element.campanhas,
-          id: element.cnpj,
-          descricao: element.descricao,
-          latitude: element.latitude,
-          longitude: element.longitude,
-          name: element.nome,
-          telefone: element.telefone,
-          doacoes: element.doacoes,
-          image: element.foto ? { uri: urlApi + '/uploads/ong/' + element.foto } : require('../../assets/images/ong.png'),
-        }));
-        setOngsData(newData);
-      } else {
-        setOngsData([]);
-      }
-    } catch (error) {
-      console.log('erro ongs', error);
-      setOngsData([]);
+    async function getCampanhas() {
+        try {
+            const response = await fetch(urlApi + "/campanha", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+            })
+
+            const apiData = await response.json()
+            console.log("--- DEBUG CAMPANHAS ---");
+            console.log("Status:", response.status);
+            console.log("Dados:", apiData);
+
+            let rawList = [];
+            if (apiData && apiData.body && Array.isArray(apiData.body)) {
+                rawList = apiData.body;
+            } else if (Array.isArray(apiData)) {
+                rawList = apiData;
+            }
+
+            if (rawList.length > 0) {
+                const formattedData = rawList.map((item: any) => ({
+                    id: item.id || String(Math.random()),
+                    idCampanha: item.id,
+                    cnpj: item.cnpjOng,
+                    name: item.nome || "Nova Campanha", // Pega o nome real se existir
+                    descricao: item.descricao  || "Sem descrição disponível",
+                    image: item.foto ? { uri: urlApi + "/uploads/ong/" + item.foto } : require("../../assets/images/ong.png")
+                }))
+                setCampanhasData(formattedData as any)
+            } else {
+                setCampanhasData([])
+            }
+        } catch (error) {
+            console.log("erro campanhas:", error)
+        }
     }
   }
 

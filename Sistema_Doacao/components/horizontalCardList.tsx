@@ -2,6 +2,8 @@ import { View, Text, FlatList, Pressable, Dimensions, Image, ImageSourcePropType
 import { SafeImage } from './SafeImage';
 import { styles } from './HorizontalCardList.styles';
 import { useRef } from 'react';
+import { router } from 'expo-router';
+import { useAuth } from '@/contexts/AuthContext';
 
 type Item = {
   id: string;
@@ -10,6 +12,7 @@ type Item = {
   descricao?: string;
   latitude?: number;
   longitude?: number;
+  cnpj?: string;
 };
 
 type Props = {
@@ -31,30 +34,48 @@ export function HorizontalCardList({ title, data, onPressItem }: Props) {
     });
   }
 
+  function handleDonate(item: Item) {
+    router.push({
+      pathname: '/auth/donation',
+      params: {
+        cnpj: item.cnpj || '',
+        targetName: item.name
+      }
+    });
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
 
         <Pressable onPress={scrollRight}>
-          <Image style={{ height: 20, width: 20 }} source={require('../assets/images/arrowRight.png')} />
+          <Image style={{ height: 20, width: 20 }} source={require("../assets/images/arrowRight.png")}></Image>
         </Pressable>
       </View>
 
-      <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+      {/* Lista */}
+      <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
         <FlatList
           ref={listRef}
           horizontal
           showsHorizontalScrollIndicator={false}
           data={data}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) => item.id + index}
           renderItem={({ item }) => (
-            <Pressable onPress={() => onPressItem?.(item)} style={styles.card}>
-              <SafeImage source={item.image} fallback={require('../assets/images/ong.png')} style={styles.image} />
+            <Pressable
+              onPress={() => userType === 'PF' && handleDonate(item)}
+              style={styles.card}
+            >
+              <Image source={item.image} style={styles.image} />
               <Text style={styles.name}>{item.name}</Text>
+              {userType === 'PF' && (
+                <Text style={{ fontSize: 10, color: '#125f0c', fontWeight: 'bold', marginTop: 5 }}>Clique p/ Doar</Text>
+              )}
             </Pressable>
           )}
         />
+
       </View>
     </View>
   );
