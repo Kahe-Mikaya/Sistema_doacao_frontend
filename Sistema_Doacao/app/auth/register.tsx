@@ -5,6 +5,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Forms } from '@/components/forms';
 import { useRegister } from '@/contexts/RegisterContext';
+import { registerSchema } from '@/schemas/registerSchema';
 export default function Register() {
   const API_URL = process.env.EXPO_PUBLIC_URL_API;
   const { data, setData } = useRegister();
@@ -46,6 +47,21 @@ export default function Register() {
 
 
   async function handleRegister() {
+    const validation = registerSchema.safeParse(data);
+
+    if (!validation.success) {
+      const errors = validation.error.flatten().fieldErrors;
+
+      setError(true);
+      setMessage(
+        Object.values(errors)
+          .flat()
+          .join('\n')
+      );
+
+      return;
+    }
+
     const formData = new FormData();
     let endpoint = "/usuario/registrar"
     formData.append('nome', data.nome);
